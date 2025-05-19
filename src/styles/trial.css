@@ -1,0 +1,47 @@
+
+.stack-div{
+   @apply flex w-fit mx-3 pt-1 px-2 lg:pt-3 lg:px-5 justify-center hover:bg-gray-200 outline rounded-md ;
+}
+
+.snow{
+    height: 6px;
+    width: 6px;
+    background-color: white;
+    box-shadow: 0px 0px 5px 5px whitesmoke;
+    border-radius: 20px;
+    display: none;
+}
+
+.snow {
+    animation: fall 40s linear infinite;
+    display: block;
+}
+
+.stack-head {
+    background: linear-gradient(to right, #34d399, white);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-decoration: underline #34d399 2px;
+    text-underline-offset: 8px;
+}
+
+.journey-head {
+    background: linear-gradient(to right, #0ea5e9, white);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-decoration: underline #0ea5e9 2px;
+    text-underline-offset: 8px;
+}
+
+
+@keyframes fall {
+    0%{
+        transform: translateY(0vh);
+    }
+
+    100%{
+        transform: translateY(300vh);
+    }
+}
