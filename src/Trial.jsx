@@ -140,9 +140,11 @@ export default function Trial(){
                         </StackDiv>
                     </div>
                     <div className='mt-20'>
-                            <h2 className='w-fit font-bold text-xl lg:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-slate-500 to-red-500'>Projects</h2>
+                            <h2 className='w-fit font-bold text-xl lg:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-slate-500 to-red-500'>
+                                Projects
+                            </h2>
                             <div className='flex'>
-
+                                Still in construction...
                             </div>
                     </div>
                     <div className='mt-20'>
