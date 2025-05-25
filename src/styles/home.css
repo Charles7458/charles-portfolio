@@ -1,6 +1,10 @@
 
 .stack-div{
-   @apply flex w-fit mx-3 pt-1 px-2 lg:pt-3 lg:px-5 justify-center hover:bg-gray-200 outline rounded-md ;
+   @apply flex w-fit mx-3 pt-1 px-2 lg:pt-3 lg:px-5 justify-center hover:bg-gray-200 outline rounded-md;
+}
+
+.scroll-hidden::-webkit-scrollbar{
+    display: none;
 }
 
 .snow{
@@ -9,13 +13,12 @@
     background-color: white;
     box-shadow: 0px 0px 5px 5px whitesmoke;
     border-radius: 20px;
-    display: none;
+    display: block;
+    margin: 20px auto;
+    animation: fall 40s linear infinite;
+
 }
 
-.snow {
-    animation: fall 40s linear infinite;
-    display: block;
-}
 
 .stack-head {
     background: linear-gradient(to right, #34d399, white);
@@ -35,6 +38,9 @@
     text-underline-offset: 8px;
 }
 
+.group:hover .group-hover\:line {
+    animation: grow 250ms linear forwards;
+}
 
 @keyframes fall {
     0%{
@@ -42,6 +48,18 @@
     }
 
     100%{
-        transform: translateY(300vh);
+        transform: translateY(600vh);
+    }
+}
+
+@keyframes grow {
+    0%{
+        width: 0%;
+    }
+    50%{
+        width: 50%;
+    }
+    100%{
+        width: 100%;
     }
 }

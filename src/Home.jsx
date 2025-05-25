@@ -1,14 +1,18 @@
 import pfp from './assets/pfp.jpg'
 import mysqlLogo from './assets/mySQL-logo.png'
-import { useState, useEffect } from 'react'
-import './styles/trial.css'
+import { useState, useEffect, useRef } from 'react'
+import {useNavigate} from 'react-router-dom'
+import './styles/home.css'
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
+import { Projects } from './Data';
+import Header from './components/Header'
 
+//component for snowing simulation
 function Snowing(){
     const pos = ['10%', '31%', '76%', '26%', '85%', '48%', '55%','91%', '98%', '15%', '35%', '60%', '12%', '80%', '67%', '41%']
 
@@ -32,13 +36,8 @@ function Snowing(){
     )
 }
 
-function NavItem({link, children}){
-    return(
-        <li className="lg:text-lg text-md lg:mx-5 mx-2 text-gray-300 hover:text-white"><a href={link}>{children}</a></li>
-    )
-}
 
-
+//Stack component
 function Stack({name, color, logo}) {
     return(
         <div className='stack-div outline' style={{color:color, outlineColor:color}}>
@@ -53,6 +52,7 @@ function Stack({name, color, logo}) {
     )
 }
 
+//Stack div component
 function StackDiv({title, children}){
     return(
         <div className=' group grid grid-cols-[25%_1fr] py-10 align-middle items-center px-5 border-b border-b-white w-full hover:bg-gradient-to-r'>
@@ -66,8 +66,45 @@ function StackDiv({title, children}){
     )
 }
 
-export default function Trial(){
-    
+function BackToTop({homeRef}){
+
+    return(
+        <button onClick={()=>homeRef.current?.scrollIntoView({behavior:"smooth"})} className='bg-white rounded-full px-3.5 pt-3 pb-2 fixed bottom-10 right-9'>
+            <box-icon name='up-arrow-alt'></box-icon>
+        </button>
+    )
+}
+
+//Project component
+function Project({id, name, img, intro, tech, nav}){
+
+    return(        
+        <div className='group shrink-0 rounded-xl bg-gray-500 py-6 max-w-[60vw] lg:max-w-fit px-5 ms-32 
+        lg:ms-0 lg:me-20 overflow-hidden cursor-default snap-start' 
+          onClick={()=>nav(`/project/${id}`)}  >
+            <a className='mx-auto flex mb-5 w-fit' href={img} onClick={e=>e.stopPropagation()}><img src={img} className='rounded-md h-24 ' /></a>
+            <h4 className='font-bold text-center group-hover:underline'>{name}</h4>
+            <p className='my-3 text-center'>{intro}</p>
+            <div className='flex justify-center items-center'>
+                {tech.map(techno=>{
+                    return<div className='py-1 px-3 bg-gradient-to-br from-blue-400 to-green-300 rounded-full me-5'>
+                            <p className='text-xs inline text-nowrap'>{techno}</p>
+                        </div>
+                })}
+            </div>
+            
+        </div>        
+    )
+}
+
+
+// The Home Page
+export default function Home(){
+    const home = useRef(null);
+    const contact = useRef(null);
+    const about = useRef(null);
+    const project = useRef(null);
+
     const frontend = [ 
         {name: 'HTML', color:'#0284c7', logo:'html5'},
         {name: 'CSS', color:'#fb923c', logo:'css3'},
@@ -75,47 +112,65 @@ export default function Trial(){
         {name: 'Bootstrap', color:'#7e22ce', logo:'bootstrap'},
         {name: 'Tailwind', color:'#0ea5e9', logo:'tailwind-css'},
     ]
-    const colors = {
-        color1 : "sky-600",
-    }
-    const [showSnow, setShowSnow] = useState(false)
 
+    const [showSnow, setShowSnow] = useState(false)
+    const navigate = useNavigate();
+    const yy =0
+    const [yPos,setYPos] = useState(0)
+    window.addEventListener('scroll',()=>(setYPos(window.scrollY)))
+
+    //functions to slide project gallery
+    function slideLeft(){
+        const gallery = document.getElementById("project-gallery");
+        gallery.scrollLeft-=200;
+    }
+
+    function slideRight(){
+        const gallery = document.getElementById("project-gallery");
+        gallery.scrollLeft+=200;
+    }
+
+    const focusHead =()=> {
+        const heading = home.current;
+        heading.scrollIntoView();
+    }
+
+    function focusComp(ref){
+        const newRef = ref.current;
+        newRef.scrollIntoView();
+    }
+
+    useEffect(()=>{focusHead()},[])
     return(
-        <div className="bg-black pt-20 text-white h-full">
+        <div className="bg-black pt-20 text-white h-full overflow-y-hidden">
+            {/* snow*/}
             {showSnow &&
                 <Snowing/>
             }  
-                {/* snow*/}
-               <div className="flex align-middle px-5 py-2 text-white justify-between fixed top-0 bg-slate-900/15 backdrop-blur shadow-gray-700 shadow-md w-full z-20">
-                    <h1 className="lg:text-2xl text-lg font-mono bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-sky-400">Charles Luis</h1>
-                    <ul className="flex list-none font-serif ">
-                        <NavItem link='#home'>Home</NavItem>
-                        <NavItem link='#about'>About</NavItem>
-                        <NavItem link='#resume'>Resume</NavItem>
-                        <NavItem link='#contact'>Contact</NavItem>
-                    
-                    </ul>
-               </div>
-               <div className="px-10" >                        
-                        <h1 className="text-gray-100 text-2xl ms-5 font-semibold scroll-mt-20" id="home">Hello!</h1>
-                        <p className="text-gray-300 text-xl w-[90vw] mt-5 ps-10 font-serif text-pretty">I am Charles Luis.
+               <Header focus={focusComp} aboutRef={about} contactRef={contact} projectRef={project} />
+               {yPos>350 && <BackToTop homeRef={home}/> }
+               <div data-aos='fade-down' data-aos-duration='1000' className="px-10 mt-20" >                        
+                        <h1 ref={home} className="text-gray-100 text-4xl lg:ms-10 font-semibold scroll-mt-20">Hello!</h1>
+                        <p className="text-gray-300 w-[90vw] lg:text-2xl lg:w-[70vw] mt-5  lg:ps-10 font-serif text-pretty">
                         I am a Java Full Stack Developer.
-                        I can create, responsive and interactive user experiences using React. And build backend using Spring Boot and Java Servlets.
+                        I create, responsive and interactive user experiences using React. And build backend using Spring Boot or Java Servlets.
+                        I have worked on few projects and keep working to improve my experience and knowledge in web app development. 
+                        I am always eager to solve challenges and keep track of latest technologies.
                         </p>        
-                    <button onClick={()=>setShowSnow(!showSnow)} className='mt-5 ms-10 px-5 py-2 rounded-xl  bg-white text-black font-bold hover:ring hover:ring-rose-600'>
+                    <button onClick={()=>setShowSnow(!showSnow)} className='mt-5 lg:ms-10 px-5 py-2 rounded-xl  bg-white text-black font-bold hover:ring hover:ring-rose-600'>
                         {showSnow ? "Stop the Snow":"Make it Snow"}
                     </button>            
                </div>
 
-               <div className='mt-60 lg:px-20 px-5 mb-20'>
-                    <h2 id='about' className='scroll-mt-20 w-fit text-3xl font-semi-bold font-mono hover:text-emerald-500 mb-16'>
-                        <a href='#about'>About</a>
+               <div className='mt-[600px] lg:px-20 px-5 mb-20'>
+                    <h2 ref={about} className='scroll-mt-20 w-fit text-3xl font-semi-bold font-mono hover:text-emerald-500 mb-8'>
+                        About
                     </h2>
-                    <h2  className=' w-fit text-lg lg:text-2xl mb-10 font-bold stack-head'>
+                    <h2 data-aos='fade-right' data-aos-duration='1000'  className=' w-fit text-lg lg:text-2xl mb-10 font-bold stack-head'>
                         My Tech Stack
                     </h2>
 
-                    <div className='justify-self-center border border-white w-full'>
+                    <div data-aos='fade-right' data-aos-duration='1500' className='justify-self-center border border-white w-full'>
                         <StackDiv title="FRONTEND">
                             {frontend.map( (stack)=>{
                                 return <Stack name={stack.name} logo={stack.logo} color={stack.color}/>
@@ -131,6 +186,16 @@ export default function Trial(){
                                 <box-icon name='java' type='logo' color="#92400e" size='md'></box-icon>
                             </span>
                         </div>
+
+                        <div className='group flex w-fit mx-3 px-5 py-3 lg: justify-center items-center text-emerald-600 hover:bg-white outline outline-emerald-600 rounded-md cursor-pointer'>
+                            <p className='text-md lg:text-xl font-bold'>Spring Boot</p>
+                            <span className='ms-2 relative top-1 hidden md:block'>
+                                <box-icon name='power-off' type='logo' color="#059669" size='md'></box-icon>
+                            </span>
+                            <span className='ms-2 relative top-1 md:hidden'>
+                                <box-icon name='power-off' type='logo' color="#059669" size='sm'></box-icon>
+                            </span>
+                        </div>
                         </StackDiv>
 
                         <StackDiv title="DATABASE">
@@ -139,17 +204,27 @@ export default function Trial(){
                             </div>
                         </StackDiv>
                     </div>
+                    {/* Projects */}
                     <div className='mt-20'>
-                            <h2 className='w-fit font-bold text-xl lg:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-slate-500 to-red-500'>
+                            <h2 ref={project} className='scroll-mt-20 w-fit font-bold text-xl lg:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-slate-500 to-red-500'>
                                 Projects
                             </h2>
-                            <div className='flex'>
-                                Still in construction...
+                            <div className='flex overflow-hidden my-10 items-center align-middle'>
+                                <button className='font-bold text-2xl mx-5' onClick={()=> {slideLeft();}}>
+                                    &lt;</button>{/*slide button*/}
+                                <div className='flex w-full overflow-x-scroll scroll-smooth scroll-hidden mx-auto items-center 
+                                align-middle snap-x snap-mandatory' id='project-gallery'>
+                                    {Projects.map(project=>{
+                                        return <Project id={project.id} name={project.name} intro={project.intro} tech={project.tech} img={project.screenshots[0]} nav={navigate}/>
+                                    })} <p className='ms-10 lg:ms-0 snap-start'>more to come...</p>
+                                </div>
+                                <button className='font-bold text-2xl mx-5' onClick={slideRight}>&gt;</button>{/*slide button*/}
+                                
                             </div>
                     </div>
                     <div className='mt-20'>
-                        <h2 className='text-3xl font-bold underline underline-offset-8 w-fit journey-head mb-10'>My Journey</h2>
-                        <Timeline>
+                        <h2 data-aos='fade-down' className='text-3xl font-bold underline underline-offset-8 w-fit journey-head mb-10'>My Journey</h2>
+                        <Timeline data-aos='fade-down'>
                             <TimelineItem>
                                 <TimelineSeparator>
                                 <TimelineDot />
@@ -177,12 +252,12 @@ export default function Trial(){
                </div>
             
             <div className='px-10 mb-20'>
-                <h1 id='contact' className='text-2xl lg:text-3xl font-bold font-mono scroll-mt-20 mb-5 w-fit bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-sky-400'>
+                <h1 ref={contact} className='text-2xl lg:text-3xl font-bold font-mono scroll-mt-20 mb-5 w-fit bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-sky-400'>
                 Contact Details
                </h1>
                <div className='bg-gray-400 w-[90%] justify-self-center rounded-lg lg:p-10 p-6'>
                     <img src={pfp}  height='40px' className='rounded-full shrink-0 w-24 h-24 lg:w-40 lg:h-40'/>
-                    <h3 className='text-lg lg:text-3xl my-8 bg-clip-text text-transparent bg-gradient-to-r from-sky-300 to-pink-300'>Charles Luis | Java Full Stack Developer</h3>
+                    <h3 className='w-fit text-lg lg:text-3xl my-8 bg-clip-text text-transparent bg-gradient-to-r from-sky-300 to-pink-300'>Charles Luis | Java Full Stack Developer</h3>
                     <p className='text-lg'><i class="fa-solid fa-envelope me-3 sky"></i><b>Email:</b> c.charles8547@gmail.com</p>
                     <p className='text-lg my-5'><i class="fa-solid fa-pen fa-xs me-3"></i><b>Social links</b></p>
                     <ul className='flex list-none'>
