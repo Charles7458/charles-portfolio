@@ -80,7 +80,7 @@ function Project({id, name, img, intro, tech, nav}){
 
     return(        
         <div className='group shrink-0 rounded-xl bg-gray-500 py-6 max-w-[60vw] lg:max-w-fit px-5 ms-32 
-        lg:ms-0 lg:me-20 overflow-hidden cursor-default snap-start' 
+        lg:ms-0 lg:me-20 overflow-hidden cursor-pointer snap-start' 
           onClick={()=>nav(`/project/${id}`)}  >
             <a className='mx-auto flex mb-5 w-fit' href={img} onClick={e=>e.stopPropagation()}><img src={img} className='rounded-md h-24 ' /></a>
             <h4 className='font-bold text-center group-hover:underline'>{name}</h4>
@@ -209,6 +209,7 @@ export default function Home(){
                             <h2 ref={project} className='scroll-mt-20 w-fit font-bold text-xl lg:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-slate-500 to-red-500'>
                                 Projects
                             </h2>
+                            <p className='my-5'>(Click to expand)</p>
                             <div className='flex overflow-hidden my-10 items-center align-middle'>
                                 <button className='font-bold text-2xl mx-5' onClick={()=> {slideLeft();}}>
                                     &lt;</button>{/*slide button*/}
